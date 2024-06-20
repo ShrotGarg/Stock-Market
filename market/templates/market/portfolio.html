@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Portfolio</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .top-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-section">
+        <h1 class="page-title">Portfolio</h1>
+        <!-- Home button to go back to stocks.html -->
+        <a href="{% url 'stocks' %}" class="btn btn-primary">Go to Stocks</a>
+    </div>
+
+    <!-- Display user's balance at the top -->
+    <p>{{ profile.user.username }}'s Balance: ${{ user_balance }}</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Stock Name</th>
+                <th>Quantity</th>
+                <th>Average Purchase Price</th>
+                <th>Current Price</th>
+                <th>Gain/Loss</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in portfolio_data %}
+            <tr>
+                <td>{{ item.stock.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.purchase_price }}</td>
+                <td>${{ item.current_price }}</td>
+                <td>${{ item.gain_loss }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h2>Total Stocks: {{ total_stocks }}</h2>
+    <h2>Total Gain/Loss: ${{ total_gain_loss }}</h2>
+    <h2>Net Worth: ${{ net_worth }}</h2>
+
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script>
+        const netWorthHistory = JSON.parse('{{ net_worth_history|safe }}');
+        const labels = Array.from({length: netWorthHistory.length}, (_, i) => i + 1);
+
+        const ctx = document.getElementById('myChart').getContext('2d');
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Net Worth History',
+                    data: netWorthHistory,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Net Worth ($)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Transaction Number'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

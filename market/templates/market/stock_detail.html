@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ stock.name }} Details</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .button-container {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .button-container a {
+            margin-left: 10px;
+        }
+        .news-article {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        .news-article img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ stock.name }}</h1>
+    <div class="button-container">
+        <!-- Buy and Sell buttons -->
+        <form action="{% url 'redirect_to_buy' stock_name=stock.name %}" method="post">
+            {% csrf_token %}
+            <button type="submit" name="action" value="buy">Buy</button>
+        </form>
+
+        <form action="{% url 'redirect_to_sell' stock_name=stock.name %}" method="post" style="margin-left: 10px;">
+            {% csrf_token %}
+            <button type="submit" name="action" value="sell">Sell</button>
+        </form>
+
+        <!-- Go to Stocks button -->
+        <a href="{% url 'stocks' %}" style="margin-left: 10px;">Go to Stocks</a>
+    </div>
+
+    <p>Current Price: ${{ stock.price }}</p>
+
+    <!-- Chart.js Canvas -->
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script>
+        const labels = JSON.parse('{{ labels|safe }}');
+        const data = JSON.parse('{{ data|safe }}');
+
+        const ctx = document.getElementById('myChart').getContext('2d');
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Price History',
+                    data: data,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Price'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+    {% if news_data %}
+        <div class="news-article">
+            <h3>{{ news_data.title }}</h3>
+            <p>{{ news_data.description }}</p>
+            <img src="{{ news_data.image_url }}" alt="{{ news_data.title }}">
+        </div>
+    {% endif %}
+</body>
+</html>

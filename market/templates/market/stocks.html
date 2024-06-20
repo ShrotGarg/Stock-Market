@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stocks</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: space-between;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .main-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .vertical-line {
+            border-left: 2px solid #e0e0e0;
+            height: 100%;
+        }
+
+        .horizontal-line {
+            width: 100%;
+            border-top: 1px solid #e0e0e0;
+            margin: 20px 0;
+        }
+
+        .right-section {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .news-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .news-item img {
+            width: 100px;
+            height: 100px;
+            margin-right: 15px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .news-title {
+            font-family: 'Georgia', serif;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0 0 5px;
+        }
+
+        .news-description {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+        }
+
+        ul li a {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <a href="{% url 'portfolio' %}">See my Profile</a>
+        <hr class="horizontal-line">
+        <h1>Stocks</h1>
+        <ul>
+            {% for stock in stocks %}
+                <li><a href="{% url 'stock_detail' stock_name=stock.name %}">{{ stock.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="vertical-line"></div>
+
+    <div class="right-section">
+        <h2>Latest News</h2>
+        {% for news in news_data %}
+        <div class="news-item">
+            <img src="{{ news.image_url }}" alt="News Image">
+            <div>
+                <p class="news-title">{{ news.title }}</p>
+                <p class="news-description">{{ news.description }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

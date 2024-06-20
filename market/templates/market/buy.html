@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Buy Stock</title>
+</head>
+<body>
+    <h1>Buy {{ stock.name }}</h1>
+    <p>Current Price: ${{ stock.price }}</p>
+    <form action="{% url 'buy' stock_name=stock.name %}" method="post">
+        {% csrf_token %}
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" min="1" required>
+        <button type="submit">Buy</button>
+    </form>
+</body>
+</html>
